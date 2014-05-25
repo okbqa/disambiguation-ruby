@@ -1,0 +1,17 @@
+{
+  "@text": "How many students does the Free University of Berlin have?",
+  "@confidence": "0.1",
+  "@support": "10",
+  "@types": "",
+  "@sparql": "",
+  "@policy": "whitelist",
+  "Resources": [  {
+    "@URI": "http://dbpedia.org/resource/Free_University_of_Berlin",
+    "@support": "391",
+    "@types": "DBpedia:University,DBpedia:EducationalInstitution,DBpedia:Organisation,Schema:Organization,Schema:EducationalOrganization,Schema:CollegeOrUniversity,Freebase:/education/university,Freebase:/education,Freebase:/organization/organization,Freebase:/organization,Freebase:/education/educational_institution,Freebase:/business/employer,Freebase:/business,Freebase:/location/location,Freebase:/location",
+    "@surfaceForm": "Free University of Berlin",
+    "@offset": "27",
+    "@similarityScore": "0.3866134285926819",
+    "@percentageOfSecondRank": "-1.0"
+  }]
+}

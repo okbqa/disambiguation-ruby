@@ -1,0 +1,12 @@
+{
+    "question" : "How many students does the Free University of Berlin have?",
+    "pseudoquery" : "select ?y where { ?x ?p1 ?y }",
+    "score" : 0.6,
+    "slots" : [
+      {"s" : "?x", "p" : "is", "o" : "rdf:Resource"},
+      {"s" : "?x", "p" : "verbalization", "o" : "Free University of Berlin"},
+      {"s" : "?p1", "p" : "is", "o" : "rdf:Property"},
+      {"s" : "?p1", "p" : "verbalization", "o" : "students"},
+      {"s" : "?y", "p" : "is", "o" : "number"},
+    ]
+}
