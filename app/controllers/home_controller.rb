@@ -1,29 +1,36 @@
 class HomeController < ApplicationController
+  respond_to :json
   def request
+    text = params['json']
+    json = JSON.parse(text)
+    question = json['question']
+    language = json['language']
   
     # parse inputs
-    slots = Slot.parse_many params['slots']
-    query = Query.parse params['query']
+    slots = Slot.parse_many json['slots']
+    query = Query.parse json['pseudoquery']
     
     vars = {}
     slots.each do |slot|
       vars[slot.s] ||= Variable.new
-      if slot.p.casecmp('is')==0
+      if "is".casecmp(slot.p)==0
         vars[slot.s].type = slot.o
-      elsif slot.p.casecmp('verbalization')==0
+      elsif "verbalization".casecmp(slot.p)==0
         vars[slot.s].surfaceform = slot.o
+      end
     end
     
-    resource_vars = vars.values.filter{|x| x.resource?}
-    property_vars = vars.values.filter{|x| x.property?}
-    
+    resource_vars = vars.values.select{|x| x.resource?}
+    property_vars = vars.values.select{|x| x.property?}
+
+        
     # disambiguate resources with dbpedia spotlight
-    resource_verbalizations = resource_vars.collect({|x| x.surfaceform}
-    resources = Resource.find(question, resource_verbalizations)['Resource']
+    resource_verbalizations = resource_vars.collect{|x| x.surfaceform}
+    resources = Resource.find(question, resource_verbalizations)
     verbalization_map = Hash[resource_verbalizations.zip resource_vars]
     
     resources.each do |resource|
-      var = vars[resource['@surfaceForm']]
+      var = verbalization_map[resource['@surfaceForm']]
       var.score ||= 0
       if var.score < resource['@similarityScore'].to_f
         var.score = resource['@similarityScore'].to_f
@@ -32,23 +39,24 @@ class HomeController < ApplicationController
         var.class = resource['@types'].split(',').first
       end
     end
+
+
     
     # disambiguate properties
-    properties = {}
     query.relations.each do |relation|
-      subject = vars.select{|x| x.surfaceform == relation.s}.first
-      property = vars.select{|x| x.surfaceform == relation.p}.first
-      object = vars.select{|x| x.surfaceform == relation.o}.first
+      subject = vars[relation.s]
+      property = vars[relation.p]
+      object = vars[relation.o]
       
-      property.uri = Property.find(subject, property, object).first[:uri]
+      property.uri = Property.find(subject, property.verbalization, object, language).first[:uri]
     end
     
     
     # format response
     score = 0.5
     
-    response = {
-      question: params['query'],
+    response_hash = {
+      question: json['query'],
       ned: [{
         score: score,
         entities: [
@@ -69,6 +77,6 @@ class HomeController < ApplicationController
       }]
     }
     
-    respond_with response.to_json
+    respond_with response_hash.to_json
   end
 end

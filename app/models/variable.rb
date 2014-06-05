@@ -1,5 +1,5 @@
 class Variable
-  attr_accessor :surfaceform :offset :class :uri :value :literal_type :score
+  attr_accessor :surfaceform, :offset, :class, :uri, :value, :literal_type, :score
   attr_reader :type
   
   def type=(type)

@@ -8,6 +8,9 @@ class Query
   def self.parse(q)
     query = Query.new
     where = q[/{.*}/]
-    @relations = where.split(/[\.{}]/).map{|x| Relation.parse x}
+    query.relations = where.split(/[\.{}]/).
+                       select{|x| x.strip.length>0}.
+                       map{|x| Relation.parse x}
+    query
   end
 end

@@ -1,4 +1,4 @@
-def Slot
+class Slot
   attr_accessor :s, :p, :o
   
   def self.parse_many (inputs)
@@ -7,9 +7,9 @@ def Slot
   
   def self.parse (input)
     slot = Slot.new
-    %w[s p o].each do |attr|
-      value = input[attr]
-    end
+    slot.s = input['s']
+    slot.p = input['p']
+    slot.o = input['o']
     slot
   end
 end

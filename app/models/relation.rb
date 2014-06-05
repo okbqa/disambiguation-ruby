@@ -2,8 +2,7 @@ class Relation
   attr_accessor :s, :p, :o
   
   def self.parse(r)
-    pieces = r.split(/\s/)
-    pieces.compac!.delete('')
+    pieces = r.split(/\s/).select{|x| x.strip.length > 0}
     if pieces.length == 3
       relation = Relation.new
       relation.s = pieces[0]
