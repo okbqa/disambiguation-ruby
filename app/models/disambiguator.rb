@@ -1,10 +1,5 @@
-class HomeController < ApplicationController
-  #respond_to :json
-  def request
-    @text = params['json']
-    
-=begin    
-    json = JSON.parse(text)
+class Disambiguator
+  def self.disambiguate(json)
     question = json['question']
     language = json['language']
   
@@ -42,8 +37,6 @@ class HomeController < ApplicationController
       end
     end
 
-
-    
     # disambiguate properties
     query.relations.each do |relation|
       subject = vars[relation.s]
@@ -58,9 +51,12 @@ class HomeController < ApplicationController
     end
     
     
-    # format response
-    score = 0.5
+    # score is minimum value among best score for each entity and property
+    resource_score = resource_vars.map{|x| x.score}.min
+    property_score = property_vars.map{|x| x.score}.min
+    score = [resource_score, property_score].min
     
+    # format response
     response_hash = {
       question: json['question'],
       ned: [{
@@ -82,8 +78,5 @@ class HomeController < ApplicationController
         ]
       }]
     }
-    
-    respond_with response_hash.to_json
-=end    
   end
 end
